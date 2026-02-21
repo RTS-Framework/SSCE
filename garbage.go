@@ -151,7 +151,8 @@ func (e *Encoder) garbageTemplate() []byte {
 func (e *Encoder) buildJunkCode(src string) (string, error) {
 	// process assembly source
 	tpl, err := template.New("junk_code").Funcs(template.FuncMap{
-		"dr": toRegDWORD,
+		"db":  toDB,
+		"hex": toHex,
 	}).Parse(src)
 	if err != nil {
 		return "", fmt.Errorf("invalid junk code template: %s", err)
