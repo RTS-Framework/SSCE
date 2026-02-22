@@ -33,8 +33,9 @@ var (
 type Encoder struct {
 	rand *rand.Rand
 
-	// assembler
-	engine *keystone.Engine
+	// assembler engine
+	ase32 *keystone.Engine
+	ase64 *keystone.Engine
 
 	// context arguments
 	arch int
@@ -147,10 +148,6 @@ func (e *Encoder) Encode(shellcode []byte, arch int, opts *Options) (ctx *Contex
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize assembler: %s", err)
 	}
-	defer func() {
-		_ = e.engine.Close()
-		e.engine = nil
-	}()
 	// set random seed
 	seed := opts.RandSeed
 	if seed == 0 {
@@ -210,17 +207,33 @@ func (e *Encoder) Encode(shellcode []byte, arch int, opts *Options) (ctx *Contex
 }
 
 func (e *Encoder) initAssembler() error {
-	var err error
+	var (
+		ase *keystone.Engine
+		err error
+	)
 	switch e.arch {
 	case 32:
-		e.engine, err = keystone.NewEngine(keystone.ARCH_X86, keystone.MODE_32)
+		if e.ase32 != nil {
+			return nil
+		}
+		ase, err = keystone.NewEngine(keystone.ARCH_X86, keystone.MODE_32)
+		if err != nil {
+			return err
+		}
+		e.ase32 = ase
 	case 64:
-		e.engine, err = keystone.NewEngine(keystone.ARCH_X86, keystone.MODE_64)
+		if e.ase64 != nil {
+			return nil
+		}
+		ase, err = keystone.NewEngine(keystone.ARCH_X86, keystone.MODE_64)
+		if err != nil {
+			return err
+		}
+		e.ase64 = ase
+	default:
+		panic("unreachable code")
 	}
-	if err != nil {
-		return err
-	}
-	return e.engine.Option(keystone.OPT_SYNTAX, keystone.OPT_SYNTAX_INTEL)
+	return ase.Option(keystone.OPT_SYNTAX, keystone.OPT_SYNTAX_INTEL)
 }
 
 func (e *Encoder) assemble(src string) ([]byte, error) {
@@ -230,7 +243,14 @@ func (e *Encoder) assemble(src string) ([]byte, error) {
 	if strings.Contains(src, "<nil>") {
 		return nil, errors.New("invalid usage in assembly source")
 	}
-	return e.engine.Assemble(src, 0)
+	switch e.arch {
+	case 32:
+		return e.ase32.Assemble(src, 0)
+	case 64:
+		return e.ase64.Assemble(src, 0)
+	default:
+		panic("unreachable code")
+	}
 }
 
 func (e *Encoder) addLoader(shellcode []byte) ([]byte, error) {
@@ -484,8 +504,17 @@ func (e *Encoder) insertGarbageInstShort() string {
 
 // Close is used to close shellcode encoder.
 func (e *Encoder) Close() error {
-	if e.engine == nil {
-		return nil
+	if e.ase32 != nil {
+		err := e.ase32.Close()
+		if err != nil {
+			return err
+		}
 	}
-	return e.engine.Close()
+	if e.ase64 != nil {
+		err := e.ase64.Close()
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
