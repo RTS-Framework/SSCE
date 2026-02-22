@@ -15,11 +15,11 @@ import (
     "fmt"
     "os"
 
-    "github.com/RSSU-Shellcode/SSCE"
+    "github.com/RTS-Framework/SSCE"
 )
 
 func main() {
-    encoder := ssce.NewEncoder(0)
+    encoder := ssce.NewEncoder()
 
     shellcode, err := os.ReadFile("shellcode.bin")
     checkError(err)
