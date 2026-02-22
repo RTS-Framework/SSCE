@@ -7,7 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/RSSU-Shellcode/SSCE"
+	"github.com/RTS-Framework/SSCE"
 )
 
 var (
