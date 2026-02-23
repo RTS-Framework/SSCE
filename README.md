@@ -1,5 +1,5 @@
 # SSCE
-A simple shellcode encoder, build and erase decoder at runtime and erase shellcode after execution.
+A simple shellcode encoder, it supports custom decoder and loader templates.
 
 ## Usage
 ```bash
@@ -34,10 +34,10 @@ func main() {
         NoGarbage:   false,
     }
 
-    shellcode, err = encoder.Encode(shellcode, 64, &opts)
+    ctx, err := encoder.Encode(shellcode, 64, &opts)
     checkError(err)
 
-    out := hex.EncodeToString(shellcode)
+    out := hex.EncodeToString(ctx.Output)
     fmt.Println(out)
 
     err = encoder.Close()
@@ -51,3 +51,5 @@ func checkError(err error) {
     }
 }
 ```
+## Disclaimer
+This project is for research purposes only and is strictly prohibited from being used for illegal purposes.
