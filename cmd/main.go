@@ -91,7 +91,7 @@ func main() {
 	if hexOut {
 		ctx.Output = []byte(hex.EncodeToString(ctx.Output))
 	}
-	err = os.WriteFile(out, ctx.Output, 0600)
+	err = os.WriteFile(out, ctx.Output, 0600) // #nosec
 	checkError(err)
 	fmt.Printf("write output shellcode to \"%s\"\n", out)
 
