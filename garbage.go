@@ -108,7 +108,7 @@ func (e *Encoder) garbageJumpShort(min, max int) []byte {
 	}
 	jmp := make([]byte, 0, 1+max/2)
 	offset := min + e.rand.Intn(max-min+1)
-	jmp = append(jmp, 0xEB, byte(offset))
+	jmp = append(jmp, 0xEB, byte(offset)) // #nosec G115
 	jmp = append(jmp, e.randBytes(offset)...)
 	return jmp
 }
