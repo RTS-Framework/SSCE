@@ -23,6 +23,6 @@ func loadShellcode(t *testing.T, sc []byte) uintptr {
 // for cross-compile
 //
 //go:uintptrescapes
-func syscallN(trap uintptr, args ...uintptr) (r1, r2 uintptr, err syscall.Errno) {
-	return syscall.SyscallN(trap, args...)
+func syscallN(proc uintptr, args ...uintptr) (r1, r2 uintptr, err syscall.Errno) {
+	return syscall.SyscallN(proc, args...)
 }
