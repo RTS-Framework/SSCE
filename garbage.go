@@ -68,7 +68,6 @@ func (e *Encoder) garbageInst() []byte {
 	if e.opts.NoGarbage {
 		return nil
 	}
-	// dynamically adjust probability
 	var numJunkCodes int
 	switch e.arch {
 	case 32:

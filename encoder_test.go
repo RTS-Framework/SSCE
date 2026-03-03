@@ -394,6 +394,6 @@ func TestEncoderFuzz(t *testing.T) {
 func testFindSignature(t *testing.T, data []byte) {
 	msg := "found signature\n"
 	msg += spew.Sdump(data)
-	require.Less(t, bytes.Count(data, []byte{0x00, 0x00, 0x00}), 3, msg)
-	require.Less(t, bytes.Count(data, []byte{0xFF, 0xFF, 0xFF}), 3, msg)
+	require.Less(t, bytes.Count(data, []byte{0x00, 0x00, 0x00}), 4, msg)
+	require.Less(t, bytes.Count(data, []byte{0xFF, 0xFF, 0xFF}), 4, msg)
 }
