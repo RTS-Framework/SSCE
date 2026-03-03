@@ -69,14 +69,15 @@ func (e *Encoder) garbageInst() []byte {
 		return nil
 	}
 	// dynamically adjust probability
-	var junkCodes []string
+	var numJunkCodes int
 	switch e.arch {
 	case 32:
-		junkCodes = e.getJunkCodeX86()
+		numJunkCodes = len(e.getJunkCodeX86())
 	case 64:
-		junkCodes = e.getJunkCodeX64()
+		numJunkCodes = len(e.getJunkCodeX64())
 	}
-	switch e.rand.Intn(2 + len(junkCodes)) {
+	// dynamically adjust probability
+	switch e.rand.Intn(2 + numJunkCodes) {
 	case 0:
 		return e.garbageJumpShort(2, 16)
 	case 1:
@@ -145,6 +146,20 @@ func (e *Encoder) garbageTemplate() []byte {
 		panic(fmt.Sprintf("failed to assemble junk code: %s", err))
 	}
 	return inst
+}
+
+func (e *Encoder) getJunkCodeX86() []string {
+	if len(e.opts.JunkCodeX86) > 0 {
+		return e.opts.JunkCodeX86
+	}
+	return defaultJunkCodeX86
+}
+
+func (e *Encoder) getJunkCodeX64() []string {
+	if len(e.opts.JunkCodeX64) > 0 {
+		return e.opts.JunkCodeX64
+	}
+	return defaultJunkCodeX64
 }
 
 // #nosec G115

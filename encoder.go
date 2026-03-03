@@ -426,20 +426,6 @@ func (e *Encoder) getLoaderX64() string {
 	return defaultLoaderX64
 }
 
-func (e *Encoder) getJunkCodeX86() []string {
-	if len(e.opts.JunkCodeX86) > 0 {
-		return e.opts.JunkCodeX86
-	}
-	return defaultJunkCodeX86
-}
-
-func (e *Encoder) getJunkCodeX64() []string {
-	if len(e.opts.JunkCodeX64) > 0 {
-		return e.opts.JunkCodeX64
-	}
-	return defaultJunkCodeX64
-}
-
 func (e *Encoder) randBytes(n int) []byte {
 	buf := make([]byte, n)
 	_, _ = e.rand.Read(buf)
