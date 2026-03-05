@@ -68,6 +68,10 @@ func (e *Encoder) garbageInst() []byte {
 	if e.opts.NoGarbage {
 		return nil
 	}
+	// random not insert garbage
+	if e.rand.Intn(10) == 0 {
+		return nil
+	}
 	var numJunkCodes int
 	switch e.arch {
 	case 32:
