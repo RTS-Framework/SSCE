@@ -101,6 +101,13 @@ func TestEncoder(t *testing.T) {
 		testFindSignature(t, sc)
 	})
 
+	t.Run("invalid arch", func(t *testing.T) {
+		shellcode := []byte{0x90}
+		ctx, err := encoder.Encode(shellcode, 123, nil)
+		require.EqualError(t, err, "unsupported architecture: 123")
+		require.Nil(t, ctx)
+	})
+
 	err := encoder.Close()
 	require.NoError(t, err)
 }
