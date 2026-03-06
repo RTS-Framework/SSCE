@@ -138,6 +138,11 @@ func (e *Encoder) Encode(shellcode []byte, arch int, opts *Options) (ctx *Contex
 	if len(shellcode) == 0 {
 		return nil, errors.New("empty shellcode")
 	}
+	switch arch {
+	case 32, 64:
+	default:
+		return nil, fmt.Errorf("unsupported architecture: %d", arch)
+	}
 	if opts == nil {
 		opts = new(Options)
 	}
