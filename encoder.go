@@ -103,13 +103,13 @@ type Options struct {
 
 // Context contains the output and context data in Encode.
 type Context struct {
-	Output      []byte `toml:"output"       json:"output"`
-	Seed        int64  `toml:"seed"         json:"seed"`
-	NumIterate  int    `toml:"num_iterate"  json:"num_iterate"`
-	MinifyMode  bool   `toml:"minify_mode"  json:"minify_mode"`
-	NoGarbage   bool   `toml:"no_garbage"   json:"no_garbage"`
-	SaveContext bool   `toml:"save_context" json:"save_context"`
-	EraseInst   bool   `toml:"erase_inst"   json:"erase_inst"`
+	Output      []byte `json:"output"`
+	Seed        int64  `json:"seed"`
+	NumIterate  int    `json:"num_iterate"`
+	MinifyMode  bool   `json:"minify_mode"`
+	NoGarbage   bool   `json:"no_garbage"`
+	SaveContext bool   `json:"save_context"`
+	EraseInst   bool   `json:"erase_inst"`
 }
 
 // NewEncoder is used to create a simple shellcode encoder.
