@@ -13,13 +13,13 @@ import (
 // as featureless as possible.
 var (
 	//go:embed junk/*_x86.asm
-	defaultJunkCodeFSX86 embed.FS
+	defaultJunkCodeFSx86 embed.FS
 
 	//go:embed junk/*_x64.asm
-	defaultJunkCodeFSX64 embed.FS
+	defaultJunkCodeFSx64 embed.FS
 
-	defaultJunkCodeX86 = readJunkCodeTemplates(defaultJunkCodeFSX86)
-	defaultJunkCodeX64 = readJunkCodeTemplates(defaultJunkCodeFSX64)
+	defaultJunkCodeX86 = readJunkCodeTemplates(defaultJunkCodeFSx86)
+	defaultJunkCodeX64 = readJunkCodeTemplates(defaultJunkCodeFSx64)
 )
 
 func readJunkCodeTemplates(efs embed.FS) []string {
