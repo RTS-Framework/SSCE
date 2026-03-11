@@ -24,9 +24,9 @@ entry:
 
  // erase useless functions and entry
  flag_eraser_1:
-  lea ecx, [ebx + calc_entry_addr]        {{igi}}
-  mov edx, eraser_stub - calc_entry_addr  {{igi}}
-  call eraser_stub                        {{igi}}
+  lea ecx, [ebx + calc_entry_addr]         {{igi}}
+  mov edx, eraser_stub - calc_entry_addr   {{igi}}
+  call eraser_stub                         {{igi}}
 
   mov ecx, ebx                       {{igi}}
   mov edx, flag_eraser_1             {{igi}}
@@ -36,12 +36,18 @@ entry:
   pop edx                            {{igi}}
   pop ecx                            {{igi}}
 
+  // ensure stack is 16 bytes aligned
+  push ebp                           {{igi}}
+  mov ebp, esp                       {{igi}}
+  mov eax, ebp                       {{igi}}
+  and eax, 0x0F                      {{igi}}
+  sub esp, eax                       {{igi}}
+
   // execute the shellcode
-  push ebp                           {{igi}}   // store ebp for save stack address
-  mov ebp, esp                       {{igi}}   // create new stack frame
-  and esp, 0xFFFFFFF0                {{igi}}   // ensure stack is 16 bytes aligned
   push esi                           {{igi}}   // move the last argument to stack
   call shellcode_stub                {{igi}}   // call the shellcode
+
+  // restore stack and ebp
   mov esp, ebp                       {{igi}}   // restore stack address
   pop ebp                            {{igi}}   // restore ebp
 
