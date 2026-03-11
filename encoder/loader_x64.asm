@@ -37,9 +37,11 @@ entry:
   pop rcx                            {{igi}}
 
   // ensure stack is 16 bytes aligned
-  push rbp
-  mov rbp, rsp
-  and rsp, 0xFFFFFFFFFFFFFFF0
+  push rbp                           {{igi}}
+  mov rbp, rsp                       {{igi}}
+  mov rax, rbp                       {{igi}}
+  and rax, 0x0F                      {{igi}}
+  sub rsp, rax                       {{igi}}
 
   // execute the shellcode
   sub rsp, 0x80                      {{igi}}
